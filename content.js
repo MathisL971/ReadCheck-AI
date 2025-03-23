@@ -1,8 +1,36 @@
 // Function to find and extract article content
 function findArticleContent() {
-  const article = document.getElementById('article-body');
+  let article = null;
+
+  // Try common selectors for article content
+  const selectors = [
+    'article', // Common tag for articles
+    'main', // Main content area
+    '[role="main"]', // ARIA role for main content
+    '.article', // Common class name
+    '.content', // Generic class name
+    '.post', // Blog post class
+    '#content', // Generic ID
+    '#main' // Generic ID
+  ];
+
+  // Iterate through the selectors to find the main content
+  for (const selector of selectors) {
+    article = document.querySelector(selector);
+    if (article) break;
+  }
+
+  // If no article is found, try to find the largest block of text
   if (!article) {
-    throw new Error('No article with id "article-body" found on this page');
+    const allDivs = Array.from(document.querySelectorAll('div'));
+    article = allDivs.reduce((largest, current) => {
+      const currentTextLength = current.innerText.trim().length;
+      return currentTextLength > (largest?.innerText.trim().length || 0) ? current : largest;
+    }, null);
+  }
+
+  if (!article) {
+    throw new Error('Unable to locate the article content on this page');
   }
 
   // Get all paragraphs from the article
@@ -87,11 +115,37 @@ function underlineClaims(claim_source_list) {
     sidebar.appendChild(closeButton);
   }
 
-  // Find the article element by its ID. This is where the claims will be searched and underlined.
-  const article = document.getElementById('article-body');
+  let article = null;
+
+  // Try common selectors for article content
+  const selectors = [
+    'article', // Common tag for articles
+    'main', // Main content area
+    '[role="main"]', // ARIA role for main content
+    '.article', // Common class name
+    '.content', // Generic class name
+    '.post', // Blog post class
+    '#content', // Generic ID
+    '#main' // Generic ID
+  ];
+
+  // Iterate through the selectors to find the main content
+  for (const selector of selectors) {
+    article = document.querySelector(selector);
+    if (article) break;
+  }
+
+  // If no article is found, try to find the largest block of text
   if (!article) {
-    // If the article element is not found, throw an error.
-    throw new Error('No article with id "article-body" found on this page');
+    const allDivs = Array.from(document.querySelectorAll('div'));
+    article = allDivs.reduce((largest, current) => {
+      const currentTextLength = current.innerText.trim().length;
+      return currentTextLength > (largest?.innerText.trim().length || 0) ? current : largest;
+    }, null);
+  }
+
+  if (!article) {
+    throw new Error('Unable to locate the article content on this page');
   }
 
   // Get all paragraph elements within the article.
